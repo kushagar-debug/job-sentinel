@@ -1,5 +1,11 @@
 """Pytest fixtures for Cloud Job Sentinel test suite."""
 
+import sys
+from pathlib import Path
+
+# Ensure project root is on sys.path for cross-platform and CI execution
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import pytest
 from core.database import JobDatabase
 from core.models import JobListing
