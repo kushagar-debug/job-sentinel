@@ -1,0 +1,71 @@
+# ==============================================================================
+# Cloud Job Sentinel (LinkedIn) - Git Ignore
+# ==============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment Variables & Secrets (CRITICAL)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# SQLite Database & Caches
+*.db
+*.sqlite3
+data/
+*.session
+session_state.json
+storage_state.json
+
+# Playwright & Browser Artifacts
+test-results/
+playwright-report/
+.playwright/
+videos/
+screenshots/
+traces/
+
+# Logging & Monitoring
+logs/
+*.log
+*.log.*
+
+# Testing & Coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.pytest_cache/
+
+# IDE & Editor Specifics
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+desktop.ini
+Thumbs.db
+.DS_Store
+
+# Temporary & Local Scratch
+scratch/
+tmp/
+temp/
