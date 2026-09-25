@@ -26,28 +26,35 @@ class Settings(BaseSettings):
 
     # Search Filters (stored as string or list, exposed cleanly as list)
     search_keywords_raw: Union[List[str], str] = Field(
-        default="Cloud Engineer Intern, DevOps Intern, Site Reliability Intern, Python Backend Intern, Platform Engineering Intern, Graduate Engineer Trainee Cloud",
+        default="DevOps Intern, DevOps Trainee, Junior DevOps Engineer, Cloud DevOps Intern, Site Reliability Intern",
         alias="SEARCH_KEYWORDS",
     )
     search_locations_raw: Union[List[str], str] = Field(
-        default="India, Bengaluru, Remote",
+        default="Chandigarh, India, Mohali, Punjab, India, Remote",
         alias="SEARCH_LOCATIONS",
     )
 
     # Matching & Limits
     min_match_score: int = Field(
-        default=40,
+        default=50,
         alias="MIN_MATCH_SCORE",
         ge=0,
         le=100,
         description="Minimum score threshold (0-100) to trigger an alert",
     )
     max_results_per_run: int = Field(
-        default=25,
+        default=10,
         alias="MAX_RESULTS_PER_RUN",
         ge=1,
-        le=100,
+        le=50,
         description="Max job cards to retrieve per search query",
+    )
+    max_alerts_per_run: int = Field(
+        default=5,
+        alias="MAX_ALERTS_PER_RUN",
+        ge=1,
+        le=20,
+        description="Maximum Telegram alerts to send per cycle to prevent notification fatigue",
     )
 
     # Operational Flags

@@ -85,6 +85,8 @@ class SentinelPipeline:
             f"[dim]Keywords: {len(keywords)} | Locations: {len(locations)} | Dry Run: {self.dispatcher.dry_run}[/dim]\n"
         )
 
+        qualifying_matches: List[MatchResult] = []
+
         for location in locations:
             for keyword in keywords:
                 metrics.queries_run += 1
@@ -97,21 +99,34 @@ class SentinelPipeline:
                     metrics.scraped_listings += len(listings)
 
                     for job in listings:
-                        await self._process_job(job, metrics)
+                        match = self._evaluate_and_record(job, metrics)
+                        if match and match.passed_threshold:
+                            qualifying_matches.append(match)
 
                 except Exception as exc:
                     logger.error(f"Error executing search for '{keyword}' in '{location}': {exc}")
+
+        # Rank matches by score (highest relevance first) and limit to max_alerts_per_run
+        qualifying_matches.sort(key=lambda m: m.score, reverse=True)
+        max_alerts = getattr(self.config, "max_alerts_per_run", 5)
+        top_alerts = qualifying_matches[:max_alerts]
+
+        for match in top_alerts:
+            success = await self.dispatcher.send_alert(match)
+            if success:
+                self.db.mark_notified(match.job.hash_id)
+                metrics.alerts_dispatched += 1
 
         metrics.end_time = time.time()
         self._print_summary_table(metrics)
         return metrics
 
-    async def _process_job(self, job: JobListing, metrics: PipelineMetrics) -> None:
-        """Processes a single scraped job through deduplication, scoring, and alerting."""
+    def _evaluate_and_record(self, job: JobListing, metrics: PipelineMetrics) -> Optional[MatchResult]:
+        """Evaluates a job listing and records it into SQLite."""
         # 1. Deduplication check
         if self.db.has_seen(job.hash_id):
             metrics.duplicates_skipped += 1
-            return
+            return None
 
         metrics.unique_new_jobs += 1
 
@@ -125,14 +140,10 @@ class SentinelPipeline:
             matched_keywords=match.matched_keywords,
         )
 
-        # 4. Threshold check & Dispatch
-        if match.passed_threshold:
-            success = await self.dispatcher.send_alert(match)
-            if success:
-                self.db.mark_notified(job.hash_id)
-                metrics.alerts_dispatched += 1
-        else:
+        if not match.passed_threshold:
             metrics.below_threshold_skipped += 1
+
+        return match
 
     def _print_summary_table(self, metrics: PipelineMetrics) -> None:
         """Renders an execution summary table in the terminal."""
