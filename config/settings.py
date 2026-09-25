@@ -26,11 +26,11 @@ class Settings(BaseSettings):
 
     # Search Filters (stored as string or list, exposed cleanly as list)
     search_keywords_raw: Union[List[str], str] = Field(
-        default="Cloud Engineer Intern, DevOps Intern, Site Reliability Intern, Python Backend Intern",
+        default="Cloud Engineer Intern, DevOps Intern, Site Reliability Intern, Python Backend Intern, Platform Engineering Intern, Graduate Engineer Trainee Cloud",
         alias="SEARCH_KEYWORDS",
     )
     search_locations_raw: Union[List[str], str] = Field(
-        default="Remote, India, United States",
+        default="India, Bengaluru, Remote",
         alias="SEARCH_LOCATIONS",
     )
 

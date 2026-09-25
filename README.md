@@ -124,8 +124,8 @@ Project 2 (linkedin)/
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/cloud-job-sentinel.git
-cd cloud-job-sentinel
+git clone https://github.com/kushagar-debug/job-sentinel.git
+cd job-sentinel
 
 # Install dependencies
 pip install -r requirements.txt
