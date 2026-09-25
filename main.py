@@ -12,8 +12,12 @@ from rich.console import Console
 
 from config.settings import settings
 from core.database import JobDatabase
+import os
 from dispatchers.telegram import TelegramDispatcher
 from handlers.pipeline import SentinelPipeline
+
+# Ensure logs directory exists for FileHandler across fresh CI checkouts
+os.makedirs("logs", exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
